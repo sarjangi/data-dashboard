@@ -215,6 +215,12 @@ npm run lint
 npm run build
 ```
 
+## CI/CD
+
+- GitHub Actions runs backend dependency install plus `pytest` for changes under `data-dashboard/backend`.
+- GitHub Actions runs frontend install, linting, and production build for changes under `data-dashboard/frontend`.
+- Workflow file: `.github/workflows/ci.yml`
+
 ## Notes
 
 - The sample data script recreates the `sales` table and reseeds demo records.

@@ -25,6 +25,24 @@ This guide covers deploying the Data Analytics Dashboard to production.
 - [ ] PostgreSQL database (AWS RDS or Azure Database)
 - [ ] Redis instance (AWS ElastiCache or Azure Cache)
 
+## Pre-Deployment Validation
+
+Run the same checks locally that CI runs in `.github/workflows/ci.yml`:
+
+```bash
+# Backend
+cd backend
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+pytest
+
+# Frontend
+cd ../frontend
+npm ci
+npm run lint
+npm run build
+```
+
 ---
 
 ## Option 1: Deploy to Vercel (Frontend) + Render (Backend)
@@ -57,7 +75,7 @@ This guide covers deploying the Data Analytics Dashboard to production.
        LOG_LEVEL=INFO
        ```
 
-5. **Run Database Migration**:
+5. **Seed Initial Data**:
    ```bash
    # In Render Shell
    python -m app.scripts.seed_data
