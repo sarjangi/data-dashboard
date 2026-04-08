@@ -19,6 +19,16 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str
 
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def fix_database_url(cls, value: str) -> str:
+        """Convert Render's postgres:// to postgresql+asyncpg:// for asyncpg."""
+        if value.startswith("postgres://"):
+            value = value.replace("postgres://", "postgresql+asyncpg://", 1)
+        elif value.startswith("postgresql://"):
+            value = value.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return value
+
     # Redis
     REDIS_URL: str = "redis://localhost:6379/0"
 

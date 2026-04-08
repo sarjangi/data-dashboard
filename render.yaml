@@ -1,0 +1,49 @@
+services:
+  # Backend API Service (Python FastAPI)
+  - type: web
+    name: data-dashboard-api
+    runtime: python
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: data-dashboard-postgres
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: data-dashboard-redis
+          property: connectionString
+      - key: CORS_ORIGINS
+        value: https://data-dashboard-sarjangi.vercel.app
+      - key: LOG_LEVEL
+        value: INFO
+      - key: ENABLE_SCHEDULER
+        value: true
+      - key: DATA_REFRESH_INTERVAL_HOURS
+        value: 24
+      - key: CACHE_TTL_SHORT
+        value: 300
+      - key: CACHE_TTL_MEDIUM
+        value: 1800
+      - key: CACHE_TTL_LONG
+        value: 3600
+
+# PostgreSQL Database
+databases:
+  - name: data-dashboard-postgres
+    databaseName: analytics
+    plan: free
+    region: oregon
+
+# Redis Instance
+  - type: redis
+    name: data-dashboard-redis
+    plan: free
+    region: oregon
+    maxmemoryPolicy: allkeys-lru
