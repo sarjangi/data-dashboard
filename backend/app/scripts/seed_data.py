@@ -89,6 +89,8 @@ async def main():
     # Create tables
     print("\n1. Creating database tables...")
     async with engine.begin() as conn:
+        from sqlalchemy import text
+        await conn.execute(text("CREATE SCHEMA IF NOT EXISTS analytics"))
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     print("✅ Tables created!")

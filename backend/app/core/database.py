@@ -42,8 +42,11 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 
 async def init_db():
-    """Initialize database (create tables)."""
+    """Initialize database (create analytics schema and tables)."""
+    from sqlalchemy import text
+
     async with engine.begin() as conn:
+        await conn.execute(text("CREATE SCHEMA IF NOT EXISTS analytics"))
         await conn.run_sync(Base.metadata.create_all)
 
 

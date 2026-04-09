@@ -12,6 +12,11 @@ class Sale(Base):
     """Sales transaction model."""
 
     __tablename__ = "sales"
+    __table_args__ = (
+        Index("idx_sales_order_date_category", "order_date", "category"),
+        Index("idx_sales_region_category", "region", "category"),
+        {"schema": "analytics"},
+    )
 
     id = Column(Integer, primary_key=True, index=True)
     order_date = Column(Date, nullable=False, index=True)
@@ -24,12 +29,6 @@ class Sale(Base):
     region = Column(String(100), index=True)
     customer_segment = Column(String(50))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-    # Additional indexes for performance
-    __table_args__ = (
-        Index("idx_sales_order_date_category", "order_date", "category"),
-        Index("idx_sales_region_category", "region", "category"),
-    )
 
     def __repr__(self):
         return f"<Sale(id={self.id}, product={self.product_name}, amount={self.total_amount})>"
