@@ -34,16 +34,16 @@ services:
       - key: CACHE_TTL_LONG
         value: 3600
 
+  # Redis Instance
+  - type: redis
+    name: data-dashboard-redis
+    plan: free
+    region: oregon
+    maxmemoryPolicy: allkeys-lru
+
 # PostgreSQL Database
 databases:
   - name: data-dashboard-postgres
     databaseName: analytics
     plan: free
     region: oregon
-
-# Redis Instance
-  - type: redis
-    name: data-dashboard-redis
-    plan: free
-    region: oregon
-    maxmemoryPolicy: allkeys-lru
