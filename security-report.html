@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Security Pipeline Report</title>
+<style>
+  body { font-family: -apple-system, Arial, sans-serif; margin: 24px; color: #1a1a2e; }
+  h1 { font-size: 1.6rem; margin-bottom: 4px; }
+  .meta { color: #666; font-size: 0.85rem; margin-bottom: 20px; }
+  .summary-grid { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+  .card { border: 1px solid #ccc; border-radius: 8px; padding: 12px 20px; min-width: 120px; }
+  .card h3 { margin: 0 0 4px 0; font-size: 1.5rem; }
+  .card p { margin: 0; font-size: 0.8rem; color: #555; }
+  .CRITICAL h3 { color: #c0392b; }
+  .HIGH h3 { color: #e67e22; }
+  .MEDIUM h3 { color: #f39c12; }
+  .LOW h3 { color: #2980b9; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 24px; font-size: 0.85rem; }
+  th { background: #f0f4f8; text-align: left; padding: 8px 12px; }
+  td { padding: 6px 12px; border-bottom: 1px solid #eee; vertical-align: top; }
+  .sev-CRITICAL { color: #c0392b; font-weight: bold; }
+  .sev-HIGH { color: #e67e22; font-weight: bold; }
+  .sev-MEDIUM { color: #f39c12; }
+  .sev-LOW { color: #2980b9; }
+  .fix-badge { background: #27ae60; color: #fff; border-radius: 4px;
+               padding: 2px 6px; font-size: 0.75rem; }
+  .suggest-badge { background: #8e44ad; color: #fff; border-radius: 4px;
+                   padding: 2px 6px; font-size: 0.75rem; }
+  pre { background: #f6f8fa; padding: 12px; border-radius: 4px;
+        overflow-x: auto; font-size: 0.8rem; margin: 0; }
+  details { margin: 4px 0; }
+  summary { cursor: pointer; color: #2c3e50; }
+</style>
+</head>
+<body>
+<h1>Security Pipeline Report</h1>
+<div class="meta">
+  Repository: https://github.com/sarjangi/data-dashboard &bull; Scanned: 2026-04-22 19:07 UTC &bull; Action: run
+</div>
+
+<h2>Summary</h2>
+<div class="summary-grid">
+  <div class="card CRITICAL"><h3>0</h3><p>CRITICAL</p></div><div class="card HIGH"><h3>1</h3><p>HIGH</p></div><div class="card MEDIUM"><h3>0</h3><p>MEDIUM</p></div><div class="card LOW"><h3>0</h3><p>LOW</p></div>
+  <div class="card"><h3>0</h3><p>Auto-fixed</p></div>
+  <div class="card"><h3>0</h3><p>Manual review</p></div>
+</div>
+<h2>Findings (1)</h2>
+<table><tr><th>Severity</th><th>Location</th><th>CWE</th><th>Issue</th><th>Code</th><th>Source</th></tr><tr><td><span class='sev-HIGH'>HIGH</span></td><td>test_vuln.py:6</td><td>CWE-89</td><td>Variable concatenated into SQL string</td><td><code>query = &quot;SELECT * FROM users WHERE name = '&quot; + username + &quot;'&quot;</code></td><td>regex</td></tr></table>
+<h2>Fix Suggestions (1)</h2>
+<table><tr><th>Severity</th><th>Location</th><th>Type</th><th>Explanation</th><th>Change</th></tr><tr><td><span class='sev-HIGH'>HIGH</span></td><td>test_vuln.py:6</td><td><span class='suggest-badge'>review</span></td><td>Add CWE-89 note above SQL string construction</td><td><details><summary>diff</summary><pre>-     query = &quot;SELECT * FROM users WHERE name = '&quot; + username + &quot;'&quot;
++     # TODO [CWE-89]: Use parameterized queries to prevent injection.
+    query = &quot;SELECT * FROM users WHERE name = '&quot; + username + &quot;'&quot;</pre></details></td></tr></table>
+<details><summary>Combined patch (apply with <code>git apply</code>)</summary><pre>--- a/test_vuln.py
++++ b/test_vuln.py
+@@ -3,5 +3,6 @@
+ 
+ def get_user(username):
+     conn = sqlite3.connect(&quot;app.db&quot;)
++    # TODO [CWE-89]: Use parameterized queries to prevent injection.
+     query = &quot;SELECT * FROM users WHERE name = '&quot; + username + &quot;'&quot;
+     return conn.execute(query).fetchall()
+</pre></details>
+</body></html>
